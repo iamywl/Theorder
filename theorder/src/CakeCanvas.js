@@ -4,70 +4,85 @@ const CakeCanvas = forwardRef((props, ref) => {
     const canvasRef = useRef(null);
     const [ctx, setCtx] = useState(null);
     
-    // 현재 선택된 도구: 'pen' 또는 'emoji'
     const [tool, setTool] = useState('pen'); 
     const [selectedEmoji, setSelectedEmoji] = useState('🍓');
     const [isDrawing, setIsDrawing] = useState(false);
+    const [cakeShape, setCakeShape] = useState('round'); 
+    const [cakeColor, setCakeColor] = useState('#ffffff'); 
+    const [textInput, setTextInput] = useState(''); 
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        // 해상도를 높이기 위해 캔버스 크기 설정 (500x500)
         canvas.width = 500;
         canvas.height = 500;
-        
         const context = canvas.getContext('2d');
         context.lineCap = 'round';
         context.lineJoin = 'round';
-        context.lineWidth = 5; // 선 두께
-        
-        // 흰색 배경 채우기
-        context.fillStyle = '#ffffff';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // 기본 원형 케이크 틀 그리기 (가이드라인)
-        context.beginPath();
-        context.arc(250, 250, 200, 0, 2 * Math.PI);
-        context.strokeStyle = '#eee';
-        context.lineWidth = 2;
-        context.stroke();
-        context.strokeStyle = '#000'; // 다시 펜 색상 검정으로
         context.lineWidth = 5;
-
         setCtx(context);
+        drawBase(context, 'round', '#ffffff');
     }, []);
+
+    useEffect(() => {
+        if(ctx) drawBase(ctx, cakeShape, cakeColor);
+    }, [cakeShape, cakeColor]);
+
+    const drawBase = (context, shape, color) => {
+        context.clearRect(0, 0, 500, 500);
+        context.fillStyle = '#fdfbf7'; 
+        context.fillRect(0, 0, 500, 500);
+        context.fillStyle = color;
+        context.strokeStyle = '#ddd';
+        context.lineWidth = 2;
+        context.beginPath();
+
+        if (shape === 'round') {
+            context.arc(250, 250, 200, 0, 2 * Math.PI);
+        } else if (shape === 'square') {
+            context.rect(50, 50, 400, 400);
+        } else if (shape === 'heart') {
+            context.moveTo(250, 120);
+            context.bezierCurveTo(250, 100, 200, 50, 125, 50);
+            context.bezierCurveTo(50, 50, 50, 150, 50, 150);
+            context.bezierCurveTo(50, 250, 150, 360, 250, 450);
+            context.bezierCurveTo(350, 360, 450, 250, 450, 150);
+            context.bezierCurveTo(450, 150, 450, 50, 375, 50);
+            context.bezierCurveTo(300, 50, 250, 100, 250, 120);
+        }
+        context.fill();
+        context.stroke();
+        context.strokeStyle = '#000';
+        context.lineWidth = 5;
+        context.fillStyle = '#000';
+    };
+
+    const addTextToCanvas = () => {
+        if (!textInput) return;
+        ctx.font = "bold 40px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#555"; 
+        ctx.fillText(textInput, 250, 250); 
+        setTextInput(''); 
+        setTool('pen'); 
+    };
 
     useImperativeHandle(ref, () => ({
         getCanvasBlob: () => {
             return new Promise(resolve => {
-                canvasRef.current.toBlob(blob => {
-                    resolve(blob);
-                }, 'image/png');
+                canvasRef.current.toBlob(blob => resolve(blob), 'image/png');
             });
         }
     }));
 
-    // --- 기능: 스티커(이모지) 선택 ---
-    const selectSticker = (emoji) => {
-        setTool('sticker');
-        setSelectedEmoji(emoji);
-    };
-
-    const selectPen = () => {
-        setTool('pen');
-    };
-
-    // --- 캔버스 이벤트 핸들러 ---
     const startAction = (e) => {
         const { x, y } = getPos(e);
-
         if (tool === 'sticker') {
-            // 스티커 모드면 클릭한 위치에 이모지 그리기
             ctx.font = "40px serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(selectedEmoji, x, y);
-        } else {
-            // 펜 모드면 그리기 시작
+        } else if (tool === 'pen') {
             ctx.beginPath();
             ctx.moveTo(x, y);
             setIsDrawing(true);
@@ -88,12 +103,10 @@ const CakeCanvas = forwardRef((props, ref) => {
         }
     };
 
-    // 좌표 계산 (마우스/터치 통합)
     const getPos = (e) => {
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         let clientX, clientY;
-
         if (e.touches) {
             clientX = e.touches[0].clientX;
             clientY = e.touches[0].clientY;
@@ -101,11 +114,8 @@ const CakeCanvas = forwardRef((props, ref) => {
             clientX = e.clientX;
             clientY = e.clientY;
         }
-
-        // 캔버스 실제 크기(500)와 화면에 보이는 크기 비율 계산
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
-
         return {
             x: (clientX - rect.left) * scaleX,
             y: (clientY - rect.top) * scaleY
@@ -113,42 +123,23 @@ const CakeCanvas = forwardRef((props, ref) => {
     };
 
     const clearCanvas = () => {
-        // 화면 지우기
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, 500, 500);
-        
-        // 가이드라인 다시 그리기
-        ctx.beginPath();
-        ctx.arc(250, 250, 200, 0, 2 * Math.PI);
-        ctx.strokeStyle = '#eee';
-        
-        // ⭐ 수정된 부분: context -> ctx 로 변경
-        ctx.lineWidth = 2; 
-        
-        ctx.stroke();
-        ctx.strokeStyle = '#000';
-        
-        // ⭐ 수정된 부분: context -> ctx 로 변경
-        ctx.lineWidth = 5; 
+        drawBase(ctx, cakeShape, cakeColor);
     };
 
     return (
         <div className="canvas-wrapper">
-            <div className="tools-panel">
-                <div className="tool-group">
-                    <span>도구: </span>
-                    <button onClick={selectPen} className={tool === 'pen' ? 'active' : ''}>🖋️ 펜</button>
-                    <button onClick={clearCanvas} className="clear-btn">🗑️ 지우기</button>
+            <div className="option-panel" style={{marginBottom: '10px', padding: '10px', background: '#f5f5f5', borderRadius: '8px', fontSize: '14px'}}>
+                <div style={{marginBottom: '5px'}}>
+                    <strong>시트: </strong>
+                    <button onClick={() => setCakeShape('round')}>⚪ 원형</button>
+                    <button onClick={() => setCakeShape('square')}>⬜ 사각</button>
+                    <button onClick={() => setCakeShape('heart')}>❤️ 하트</button>
                 </div>
-                <div className="tool-group sticker-group">
-                    <span>장식: </span>
-                    <button onClick={() => selectSticker('🍓')}>🍓</button>
-                    <button onClick={() => selectSticker('🌸')}>🌸</button>
-                    <button onClick={() => selectSticker('🍒')}>🍒</button>
-                    <button onClick={() => selectSticker('🕯️')}>🕯️</button>
-                    <button onClick={() => selectSticker('🍫')}>🍫</button>
-                    <button onClick={() => selectSticker('🍋')}>🍋</button>
-                    <button onClick={() => selectSticker('🎉')}>🎉</button>
+                <div>
+                    <strong>배경: </strong>
+                    <button onClick={() => setCakeColor('#ffffff')}>🤍 생크림</button>
+                    <button onClick={() => setCakeColor('#5d4037')}>🍫 초코</button>
+                    <button onClick={() => setCakeColor('#f8bbd0')}>🍓 딸기</button>
                 </div>
             </div>
 
@@ -163,7 +154,20 @@ const CakeCanvas = forwardRef((props, ref) => {
                 onTouchMove={moveAction}
                 onTouchEnd={endAction}
             />
-            <p className="tip">💡 장식을 선택하고 캔버스를 클릭(터치)하여 꾸며보세요!</p>
+
+            <div className="tools-panel" style={{marginTop: '10px'}}>
+                <div className="tool-group" style={{display:'flex', gap:'5px', justifyContent:'center', marginBottom:'5px'}}>
+                    <input type="text" placeholder="레터링 입력" value={textInput} onChange={(e) => setTextInput(e.target.value)} style={{padding: '5px', width: '120px'}}/>
+                    <button onClick={addTextToCanvas} style={{background:'#333', color:'white'}}>쓰기</button>
+                </div>
+                <div className="tool-group">
+                    <button onClick={() => setTool('pen')} className={tool==='pen'?'active':''}>🖋️ 펜</button>
+                    <button onClick={() => {setTool('sticker'); setSelectedEmoji('🍓');}}>🍓</button>
+                    <button onClick={() => {setTool('sticker'); setSelectedEmoji('🕯️');}}>🕯️</button>
+                    <button onClick={() => {setTool('sticker'); setSelectedEmoji('🌸');}}>🌸</button>
+                    <button onClick={clearCanvas} className="clear-btn">🗑️ 초기화</button>
+                </div>
+            </div>
         </div>
     );
 });
