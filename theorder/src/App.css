@@ -1,153 +1,270 @@
+/* 전체 배경 */
 .App {
-  text-align: center;
   min-height: 100vh;
-  background-color: #f9f9f9;
-  padding-top: 20px;
+  background-color: #fdfbf7; /* 따뜻한 크림색 */
+  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.order-container {
-  padding: 20px;
-  max-width: 400px;
+/* 컨테이너 공통 */
+.container {
+  max-width: 1000px; /* 데스크탑 너비 확장 */
   margin: 0 auto;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-.canvas-container {
-  margin-bottom: 20px;
+/* 타이틀 */
+.title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+/* --- [화면 1] 주문 레이아웃 (반응형) --- */
+.order-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.left-panel, .right-panel {
+  flex: 1;
+  min-width: 320px; /* 너무 작아지면 줄바꿈 */
+}
+
+/* 캔버스 스타일 */
+.canvas-wrapper {
   text-align: center;
 }
 
-.drawing-canvas {
-  border: 2px dashed #ccc;
-  touch-action: none; /* 모바일 터치 스크롤 방지 */
-  border-radius: 8px;
-}
-
-.input-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
-  font-size: 14px;
-  text-align: left;
-  color: #333;
-}
-
-.input-field {
+.main-canvas {
   width: 100%;
-  padding: 12px;
-  margin-top: 8px;
+  max-width: 500px; /* 화면 크기에 맞춰 줄어듦 */
+  aspect-ratio: 1/1;
+  border: 2px dashed #ddd;
+  border-radius: 50%; /* 원형 느낌 */
+  background: white;
+  cursor: crosshair;
+  touch-action: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* 도구 패널 */
+.tools-panel {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.tool-group button {
+  font-size: 20px;
+  background: #f0f0f0;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-sizing: border-box;
-  font-size: 16px;
+  padding: 5px 10px;
+  margin: 0 3px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.textarea-field {
-  resize: vertical;
+.tool-group button:hover {
+  background: #e0e0e0;
+  transform: scale(1.1);
+}
+
+.tool-group button.active {
+  background: #ffdddd;
+  border-color: #ff8888;
+}
+
+.clear-btn {
+  font-size: 14px !important;
+  vertical-align: middle;
+}
+
+.tip {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* 폼 스타일 */
+.form-title {
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.order-form label {
+  display: block;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.order-form input, .order-form select, .order-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.order-form textarea {
   min-height: 100px;
+  resize: vertical;
 }
 
 .submit-btn {
-  margin-top: 30px;
   width: 100%;
+  margin-top: 30px;
   padding: 15px;
-  background-color: #8e44ad; /* 보라색 */
+  background: #ff6b6b;
   color: white;
-  border: none;
-  border-radius: 8px;
   font-size: 18px;
   font-weight: bold;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s;
+  box-shadow: 0 4px 0 #e05555;
+  transition: 0.1s;
 }
 
-.submit-btn:disabled {
-  background-color: #ccc;
+.submit-btn:active {
+  transform: translateY(4px);
+  box-shadow: none;
 }
 
-.reset-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #eee;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-}.App {
-  text-align: center;
-  min-height: 100vh;
-  background-color: #f9f9f9;
-  padding-top: 20px;
+/* --- [화면 2] 입찰 현황판 스타일 --- */
+.auction-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 20px;
 }
 
-.order-container {
+.my-order-card {
+  flex: 1;
+  min-width: 300px;
+  background: #fff;
+  border: 1px solid #eee;
   padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.canvas-container {
-  margin-bottom: 20px;
+  border-radius: 15px;
   text-align: center;
 }
 
-.drawing-canvas {
-  border: 2px dashed #ccc;
-  touch-action: none; /* 모바일 터치 스크롤 방지 */
-  border-radius: 8px;
+.order-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #eee;
+  margin: 15px 0;
 }
 
-.input-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
-  font-size: 14px;
+.order-info {
   text-align: left;
-  color: #333;
-}
-
-.input-field {
-  width: 100%;
-  padding: 12px;
-  margin-top: 8px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-.textarea-field {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.submit-btn {
-  margin-top: 30px;
-  width: 100%;
+  background: #f9f9f9;
   padding: 15px;
-  background-color: #8e44ad; /* 보라색 */
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.bids-list {
+  flex: 2;
+  min-width: 320px;
+}
+
+.bid-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  position: relative;
+  transition: 0.2s;
+}
+
+.bid-card:hover {
+  border-color: #ff6b6b;
+  transform: translateX(5px);
+}
+
+.bid-card.highlight {
+  border: 2px solid #ff6b6b;
+  background: #fffbfb;
+}
+
+.shop-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.shop-name {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.shop-score {
+  color: #f1c40f;
+  font-size: 14px;
+}
+
+.bid-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.shop-msg {
+  color: #666;
+  font-size: 14px;
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.accept-btn {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  background: #333;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
 }
 
-.submit-btn:disabled {
-  background-color: #ccc;
+.bid-card.highlight .accept-btn {
+  background: #ff6b6b;
 }
 
 .reset-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #eee;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  display: block;
+  margin: 40px auto 0;
+  padding: 10px 30px;
+  background: #ddd;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
   cursor: pointer;
 }
