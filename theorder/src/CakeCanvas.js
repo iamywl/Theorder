@@ -20,11 +20,28 @@ const CakeCanvas = forwardRef((props, ref) => {
         context.lineJoin = 'round';
         context.lineWidth = 5;
         setCtx(context);
-        drawBase(context, 'round', '#ffffff');
+        
+        // 베이스 그리기 (에러 해결을 위해 함수 내부로 로직 이동 가능하지만, 여기선 주석으로 처리)
+        context.clearRect(0, 0, 500, 500);
+        context.fillStyle = '#fdfbf7'; 
+        context.fillRect(0, 0, 500, 500);
+        context.fillStyle = '#ffffff';
+        context.strokeStyle = '#ddd';
+        context.lineWidth = 2;
+        context.beginPath();
+        context.arc(250, 250, 200, 0, 2 * Math.PI);
+        context.fill();
+        context.stroke();
+        context.strokeStyle = '#000';
+        context.lineWidth = 5;
+        context.fillStyle = '#000';
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         if(ctx) drawBase(ctx, cakeShape, cakeColor);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cakeShape, cakeColor]);
 
     const drawBase = (context, shape, color) => {

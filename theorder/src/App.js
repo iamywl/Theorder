@@ -15,6 +15,18 @@ const Toast = ({ message, onClose }) => {
   return <div className="toast-popup">{message}</div>;
 };
 
+// --- [데이터] 이상형 월드컵 후보 (컴포넌트 밖으로 이동하여 에러 해결) ---
+const CANDIDATES = [
+  { id: 1, name: "곰돌이 케이크", emoji: "🐻", color: "#FFC0CB" },
+  { id: 2, name: "엘사 케이크", emoji: "❄️", color: "#87CEEB" },
+  { id: 3, name: "골프장 케이크", emoji: "⛳", color: "#98FB98" },
+  { id: 4, name: "보라해 케이크", emoji: "💜", color: "#DDA0DD" },
+  { id: 5, name: "돈방석 케이크", emoji: "💰", color: "#FFD700" },
+  { id: 6, name: "자몽 타르트", emoji: "🍊", color: "#FFA07A" },
+  { id: 7, name: "갤럭시 케이크", emoji: "🌌", color: "#E6E6FA" },
+  { id: 8, name: "하트 쿠키", emoji: "🍪", color: "#FF6B6B" },
+];
+
 // --- [컴포넌트] 이상형 월드컵 (미니게임) ---
 const CakeWorldCup = ({ onClose }) => {
   const [round, setRound] = useState([]);
@@ -22,20 +34,9 @@ const CakeWorldCup = ({ onClose }) => {
   const [currentPair, setCurrentPair] = useState([0, 1]);
   const [winner, setWinner] = useState(null);
 
-  // 게임 초기 데이터
-  const candidates = [
-    { id: 1, name: "곰돌이 케이크", emoji: "🐻", color: "#FFC0CB" },
-    { id: 2, name: "엘사 케이크", emoji: "❄️", color: "#87CEEB" },
-    { id: 3, name: "골프장 케이크", emoji: "⛳", color: "#98FB98" },
-    { id: 4, name: "보라해 케이크", emoji: "💜", color: "#DDA0DD" },
-    { id: 5, name: "돈방석 케이크", emoji: "💰", color: "#FFD700" },
-    { id: 6, name: "자몽 타르트", emoji: "🍊", color: "#FFA07A" },
-    { id: 7, name: "갤럭시 케이크", emoji: "🌌", color: "#E6E6FA" },
-    { id: 8, name: "하트 쿠키", emoji: "🍪", color: "#FF6B6B" },
-  ];
-
   useEffect(() => {
-    setRound(candidates.sort(() => Math.random() - 0.5)); // 랜덤 셔플
+    // CANDIDATES 상수를 사용하여 의존성 경고 해결
+    setRound([...CANDIDATES].sort(() => Math.random() - 0.5)); 
   }, []);
 
   const handleSelect = (selected) => {
@@ -93,8 +94,6 @@ const CakeWorldCup = ({ onClose }) => {
 // --- [모드] 사장님 대시보드 (Admin) ---
 const BossMode = () => {
   const [activeTab, setActiveTab] = useState('dash');
-  
-  // 가짜 매출 데이터
   const salesData = [
     { day: '월', amount: 120000 }, { day: '화', amount: 180000 },
     { day: '수', amount: 150000 }, { day: '목', amount: 240000 },
@@ -108,12 +107,10 @@ const BossMode = () => {
         <h2>💼 사장님, 환영합니다!</h2>
         <p>오늘 들어온 주문을 확인해보세요.</p>
       </div>
-      
       <div className="boss-tabs">
         <button className={activeTab==='dash'?'active':''} onClick={()=>setActiveTab('dash')}>📊 매출 통계</button>
         <button className={activeTab==='orders'?'active':''} onClick={()=>setActiveTab('orders')}>🛎️ 주문 관리 <span className="badge">2</span></button>
       </div>
-
       {activeTab === 'dash' && (
         <div className="dashboard-view">
             <div className="stat-cards">
@@ -134,32 +131,17 @@ const BossMode = () => {
             </div>
         </div>
       )}
-
       {activeTab === 'orders' && (
         <div className="order-manage-view">
             <div className="order-item-boss">
-                <div className="order-head">
-                    <span className="new-badge">NEW</span>
-                    <strong>홍길동 고객님 (1호, 생크림)</strong>
-                    <span className="time">10분 전</span>
-                </div>
+                <div className="order-head"><span className="new-badge">NEW</span><strong>홍길동 고객님 (1호, 생크림)</strong><span className="time">10분 전</span></div>
                 <p className="req">"레터링: Happy Day! 딸기 많이 넣어주세요."</p>
-                <div className="btn-group">
-                    <button className="reject">거절</button>
-                    <button className="accept">입찰하기 (35,000원)</button>
-                </div>
+                <div className="btn-group"><button className="reject">거절</button><button className="accept">입찰하기 (35,000원)</button></div>
             </div>
             <div className="order-item-boss">
-                <div className="order-head">
-                    <span className="new-badge">NEW</span>
-                    <strong>김철수 고객님 (2호, 초코)</strong>
-                    <span className="time">30분 전</span>
-                </div>
+                <div className="order-head"><span className="new-badge">NEW</span><strong>김철수 고객님 (2호, 초코)</strong><span className="time">30분 전</span></div>
                 <p className="req">"픽업 시간 18시로 맞춰주세요."</p>
-                <div className="btn-group">
-                    <button className="reject">거절</button>
-                    <button className="accept">입찰하기 (42,000원)</button>
-                </div>
+                <div className="btn-group"><button className="reject">거절</button><button className="accept">입찰하기 (42,000원)</button></div>
             </div>
         </div>
       )}
@@ -167,7 +149,7 @@ const BossMode = () => {
   );
 };
 
-// --- [서브] 갤러리 탭 (월드컵 기능 추가) ---
+// --- [서브] 갤러리 탭 ---
 const GalleryTab = ({ onToast }) => {
   const [showWorldCup, setShowWorldCup] = useState(false);
   const [filter, setFilter] = useState("ALL");
@@ -194,14 +176,9 @@ const GalleryTab = ({ onToast }) => {
         <h2 className="tab-title">🏆 명예의 전당</h2>
         <button className="game-btn" onClick={() => setShowWorldCup(true)}>🎮 이상형 월드컵</button>
       </div>
-      
-      <div className="filter-bar">
-        <input type="text" placeholder="디자인 검색..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
-      </div>
+      <div className="filter-bar"><input type="text" placeholder="디자인 검색..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/></div>
       <div className="tags-bar">
-        {['ALL', '기념일', '부모님', '캐릭터', '친구'].map(tag => (
-            <button key={tag} className={filter === tag ? 'active' : ''} onClick={() => setFilter(tag)}>#{tag}</button>
-        ))}
+        {['ALL', '기념일', '부모님', '캐릭터', '친구'].map(tag => (<button key={tag} className={filter === tag ? 'active' : ''} onClick={() => setFilter(tag)}>#{tag}</button>))}
       </div>
       <div className="gallery-grid">
         {filteredImages.map(img => (
@@ -221,7 +198,7 @@ const GalleryTab = ({ onToast }) => {
 
 // --- [메인] App ---
 function App() {
-  const [isBossMode, setIsBossMode] = useState(false); // 사장님 모드 토글
+  const [isBossMode, setIsBossMode] = useState(false);
   const [activeTab, setActiveTab] = useState('home'); 
   const [toastMsg, setToastMsg] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
@@ -233,19 +210,10 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(600);
   const [formData, setFormData] = useState({ name: '', phone: '', date: getToday(), details: '', product: '생크림', size: '1호' });
   const canvasRef = useRef();
-
-  // 최근 본 상품 (로컬스토리지 시뮬레이션)
   const [recentItems, setRecentItems] = useState([]);
 
   const showToast = (msg) => { setToastMsg(msg); setTimeout(() => setToastMsg(null), 3000); };
-
-  // 최근 본 상품 추가
-  const addToRecent = (item) => {
-    setRecentItems(prev => {
-        const newItems = [item, ...prev.filter(i => i.name !== item.name)].slice(0, 5);
-        return newItems;
-    });
-  };
+  const addToRecent = (item) => { setRecentItems(prev => [item, ...prev.filter(i => i.name !== item.name)].slice(0, 5)); };
 
   useEffect(() => { if (darkMode) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }, [darkMode]);
   useEffect(() => { let timer; if (view === 'auction' && timeLeft > 0) timer = setInterval(() => setTimeLeft(p => p - 1), 1000); return () => clearInterval(timer); }, [view, timeLeft]);
@@ -265,17 +233,14 @@ function App() {
       addToRecent({ name: '나만의 커스텀 케이크', date: getToday(), type: 'custom' });
       window.scrollTo(0,0); 
   };
-  
   const handleReset = () => { setFormData({ name:'', phone:'', date:getToday(), details:'', product:'생크림', size:'1호' }); setPreviewImg(null); setRefImage(null); setView('order'); };
 
-  // --- 렌더링 ---
   return (
     <div className="App">
       <header className="app-header">
         <div style={{width: '100%', maxWidth:'1000px', margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
             <div className="logo-area"><Logo size={30} type="icon" /><span className="brand-name">The Order</span></div>
             <div style={{display:'flex', gap:'10px'}}>
-                {/* 사장님 모드 토글 스위치 */}
                 <label className="switch">
                     <input type="checkbox" checked={isBossMode} onChange={()=>setIsBossMode(!isBossMode)} />
                     <span className="slider round"></span>
@@ -295,22 +260,12 @@ function App() {
                 view === 'order' ? (
                     <div className="container order-layout fade-in">
                         <div className="left-panel">
-                            <div className="panel-header">
-                                <h2 className="page-title">🎨 커스텀 디자인</h2>
-                                <p className="subtitle">원하는 모양으로 케이크를 그려보세요.</p>
-                            </div>
+                            <div className="panel-header"><h2 className="page-title">🎨 커스텀 디자인</h2><p className="subtitle">원하는 모양으로 케이크를 그려보세요.</p></div>
                             <CakeCanvas ref={canvasRef} />
-                            <div className="ref-section">
-                                <h4 className="section-label">📌 레퍼런스 첨부</h4>
-                                <input type="file" accept="image/*" onChange={handleRefImageUpload} />
-                                {refImage && <img src={refImage} alt="참고" className="ref-preview" />}
-                            </div>
+                            <div className="ref-section"><h4 className="section-label">📌 레퍼런스 첨부</h4><input type="file" accept="image/*" onChange={handleRefImageUpload} />{refImage && <img src={refImage} alt="참고" className="ref-preview" />}</div>
                         </div>
                         <div className="right-panel">
-                            <div className="panel-header">
-                                <h2 className="page-title">📋 주문서 작성</h2>
-                                <p className="subtitle">상세 정보를 입력해주세요.</p>
-                            </div>
+                            <div className="panel-header"><h2 className="page-title">📋 주문서 작성</h2><p className="subtitle">상세 정보를 입력해주세요.</p></div>
                             <form onSubmit={handleSubmit} className="order-form">
                                 <div className="form-row">
                                     <div className="input-group"><label>사이즈</label><select name="size" value={formData.size} onChange={handleChange}><option>1호</option><option>2호</option><option>3호</option></select></div>
@@ -375,8 +330,6 @@ function App() {
                 <div className="container fade-in">
                     <h2 className="tab-title">👤 마이페이지</h2>
                     <div className="profile-card"><div className="profile-img">🦁</div><div className="profile-info"><h3>멋쟁이 사자님</h3><p>VIP 등급 (다음 달 달성 예정)</p></div></div>
-                    
-                    {/* 최근 본 상품 (기능 추가됨) */}
                     <div className="section-box">
                         <h4 style={{margin:'0 0 10px'}}>🕒 최근 본 상품</h4>
                         {recentItems.length === 0 ? <p style={{color:'#999', fontSize:'13px'}}>최근 본 기록이 없습니다.</p> : (
@@ -390,10 +343,8 @@ function App() {
                             </div>
                         )}
                     </div>
-
                     <div className="menu-list" style={{marginTop:'20px'}}>
                         <div className="menu-item" style={{padding:'15px 0', borderBottom:'1px solid #eee', display:'flex', justifyContent:'space-between', cursor:'pointer'}}>❤️ 찜한 가게 <span>3 ></span></div>
-                        <div className="menu-item" style={{padding:'15px 0', borderBottom:'1px solid #eee', display:'flex', justifyContent:'space-between', cursor:'pointer'}}>🎟️ 내 쿠폰함 <span>2 ></span></div>
                         <div className="menu-item" style={{padding:'15px 0', borderBottom:'1px solid #eee', display:'flex', justifyContent:'space-between', cursor:'pointer'}}>⚙️ 설정 <span>></span></div>
                     </div>
                 </div>
