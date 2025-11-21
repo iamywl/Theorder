@@ -1,270 +1,155 @@
-/* 전체 배경 */
-.App {
-  min-height: 100vh;
-  background-color: #fdfbf7; /* 따뜻한 크림색 */
-  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  padding: 20px;
-  box-sizing: border-box;
+/* --- 1. 기본 설정 및 변수 --- */
+* { box-sizing: border-box; }
+
+:root {
+  --bg-color: #F8F9FA;
+  --container-bg: #FFFFFF;
+  --text-color: #333333;
+  --sub-text: #666666;
+  --primary-color: #FF6B6B;
+  --accent-color: #FF8787;
+  --border-color: #EEEEEE;
+  --nav-bg: #FFFFFF;
 }
 
-/* 컨테이너 공통 */
+body.dark-mode {
+  --bg-color: #121212;
+  --container-bg: #1E1E1E;
+  --text-color: #E0E0E0;
+  --sub-text: #AAAAAA;
+  --primary-color: #FF6B6B;
+  --accent-color: #D63031;
+  --border-color: #333333;
+  --nav-bg: #252525;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  transition: background 0.3s, color 0.3s;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+}
+
+/* --- 레이아웃 --- */
+.app-header {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; height: 60px; padding: 0 20px;
+  background: var(--nav-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo-area { display: flex; align-items: center; gap: 10px; }
+.brand-name { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; white-space: nowrap; }
+.theme-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; }
+
 .container {
-  max-width: 1000px; /* 데스크탑 너비 확장 */
-  margin: 0 auto;
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  width: 95%; max-width: 1000px; margin: 20px auto;
+  background: var(--container-bg); padding: 20px;
+  border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-/* 타이틀 */
-.title {
-  text-align: center;
-  color: #333;
-  margin-bottom: 10px;
+/* --- 지도 탭 (CSS 패턴 적용) --- */
+.fake-map-pattern {
+  width: 100%; height: 400px; border-radius: 15px; position: relative;
+  background-color: #f4f4f4;
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 20px 20px; /* 모눈종이 패턴 */
+  border: 1px solid var(--border-color);
+  overflow: hidden;
 }
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 30px;
-  font-size: 14px;
+.map-pin { 
+  position: absolute; background: white; padding: 6px 12px; 
+  border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+  font-size: 12px; font-weight: bold; color: #333; cursor: pointer; 
+  transition: transform 0.2s; display: flex; align-items: center; gap: 5px;
 }
-
-/* --- [화면 1] 주문 레이아웃 (반응형) --- */
-.order-layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-}
-
-.left-panel, .right-panel {
-  flex: 1;
-  min-width: 320px; /* 너무 작아지면 줄바꿈 */
+.map-pin:hover { transform: scale(1.1) translateY(-5px); z-index: 10; background: var(--primary-color); color: white; }
+.current-pos { 
+  position: absolute; top: 50%; left: 48%; transform: translate(-50%, -50%); 
+  width: 20px; height: 20px; background: #2980b9; border: 3px solid white; 
+  border-radius: 50%; box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.3); text-indent: -9999px;
 }
 
-/* 캔버스 스타일 */
-.canvas-wrapper {
-  text-align: center;
-}
-
-.main-canvas {
-  width: 100%;
-  max-width: 500px; /* 화면 크기에 맞춰 줄어듦 */
-  aspect-ratio: 1/1;
-  border: 2px dashed #ddd;
-  border-radius: 50%; /* 원형 느낌 */
-  background: white;
-  cursor: crosshair;
-  touch-action: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-/* 도구 패널 */
-.tools-panel {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-}
-
-.tool-group button {
-  font-size: 20px;
-  background: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 5px 10px;
-  margin: 0 3px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.tool-group button:hover {
-  background: #e0e0e0;
-  transform: scale(1.1);
-}
-
-.tool-group button.active {
-  background: #ffdddd;
-  border-color: #ff8888;
-}
-
-.clear-btn {
-  font-size: 14px !important;
-  vertical-align: middle;
-}
-
-.tip {
-  font-size: 12px;
-  color: #888;
-  margin-top: 5px;
-}
-
-/* 폼 스타일 */
-.form-title {
-  border-bottom: 2px solid #333;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-.order-form label {
-  display: block;
-  font-weight: bold;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-size: 14px;
-}
-
-.order-form input, .order-form select, .order-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-.order-form textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.submit-btn {
-  width: 100%;
-  margin-top: 30px;
-  padding: 15px;
-  background: #ff6b6b;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  box-shadow: 0 4px 0 #e05555;
-  transition: 0.1s;
-}
-
-.submit-btn:active {
-  transform: translateY(4px);
-  box-shadow: none;
-}
-
-/* --- [화면 2] 입찰 현황판 스타일 --- */
-.auction-status {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  margin-top: 20px;
-}
-
-.my-order-card {
-  flex: 1;
-  min-width: 300px;
-  background: #fff;
-  border: 1px solid #eee;
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
-}
-
-.order-img {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid #eee;
-  margin: 15px 0;
-}
-
-.order-info {
-  text-align: left;
-  background: #f9f9f9;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.bids-list {
-  flex: 2;
-  min-width: 320px;
-}
-
-.bid-card {
-  background: white;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+/* --- 챗봇 --- */
+.chatbot-wrapper { position: fixed; bottom: 90px; right: 20px; z-index: 2000; }
+.chatbot-btn { 
+  width: 60px; height: 60px; border-radius: 50%; background: var(--primary-color); 
+  border: none; font-size: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   position: relative;
-  transition: 0.2s;
+}
+.chatbot-badge { position: absolute; top: 0; right: 0; background: red; color: white; font-size: 12px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.chatbot-window {
+  width: 300px; height: 400px; background: white; border-radius: 15px; 
+  box-shadow: 0 5px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid #eee;
+}
+.chatbot-header { padding: 15px; background: var(--primary-color); color: white; font-weight: bold; display: flex; justify-content: space-between; }
+.chatbot-header button { background: none; border: none; color: white; font-size: 16px; cursor: pointer; }
+.chatbot-body { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
+.chat-msg { padding: 8px 12px; border-radius: 10px; max-width: 80%; font-size: 14px; }
+.chat-msg.bot { background: white; border: 1px solid #ddd; align-self: flex-start; }
+.chat-msg.user { background: var(--primary-color); color: white; align-self: flex-end; }
+.chatbot-input { display: flex; padding: 10px; border-top: 1px solid #eee; }
+.chatbot-input input { flex: 1; border: 1px solid #ddd; padding: 8px; border-radius: 5px; margin-right: 5px; }
+.chatbot-input button { background: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+
+/* --- 가게 상세 모달 --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: flex; align-items: center; justify-content: center; }
+.store-modal-content { background: white; width: 90%; max-width: 450px; height: 80%; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; animation: slideUp 0.3s ease-out; }
+.store-header-img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; color: #333; }
+.store-body { padding: 20px; flex: 1; overflow-y: auto; }
+.store-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.store-title-row h2 { margin: 0; font-size: 22px; }
+.store-desc { color: #666; font-size: 14px; margin-bottom: 20px; background: #f5f5f5; padding: 10px; border-radius: 8px; }
+.store-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 15px; }
+.store-tabs button { flex: 1; background: none; border: none; padding: 10px; cursor: pointer; color: #999; font-weight: bold; }
+.store-tabs button.active { color: #333; border-bottom: 2px solid #333; }
+.menu-item-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 10px; }
+.menu-info h4 { margin: 0 0 5px 0; font-size: 16px; }
+.menu-info p { margin: 0 0 5px 0; color: #888; font-size: 12px; }
+.menu-info span { font-weight: bold; color: var(--primary-color); }
+.menu-img { font-size: 40px; }
+
+/* --- 기존 스타일 유지 --- */
+.order-layout { display: flex; flex-wrap: wrap; gap: 40px; }
+.left-panel, .right-panel { flex: 1; min-width: 320px; }
+.main-canvas { width: 100%; border: 2px dashed var(--border-color); border-radius: 20px; background: white; }
+.order-form input, .order-form select, .order-form textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; }
+.submit-btn { width: 100%; margin-top: 15px; padding: 15px; background: var(--primary-color); color: white; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; }
+.price-estimator { background: #333; color: white; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; font-weight: bold; margin-top: 10px; margin-bottom: 20px;}
+.auction-status { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px; }
+.my-order-card { flex: 1; min-width: 300px; background: var(--bg-color); padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px solid var(--border-color); }
+.bids-list { flex: 2; min-width: 320px; }
+.bid-card { background: var(--container-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; margin-bottom: 15px; position: relative;}
+.bid-card.highlight { border: 2px solid var(--primary-color); background: rgba(255, 107, 107, 0.05); }
+.shop-info { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.accept-btn { position: absolute; right: 20px; bottom: 20px; background: #333; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+.bid-card.highlight .accept-btn { background: var(--primary-color); }
+.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--nav-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; padding: 0; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+.bottom-nav button { background: none; border: none; font-size: 11px; color: var(--sub-text); cursor: pointer; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
+.bottom-nav button.active { color: var(--primary-color); font-weight: bold; }
+.bottom-nav button span { font-size: 24px; display: block; margin-bottom: 2px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+.gallery-item { background: var(--bg-color); border-radius: 15px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
+.fake-img { height: 150px; display: flex; align-items: center; justify-content: center; }
+.gallery-emoji { font-size: 50px; }
+.gallery-info { padding: 10px; text-align: left; }
+.shop-list { margin-top: 20px; }
+.shop-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+.tag { font-size: 10px; background: #ffe3e3; color: #ff6b6b; padding: 2px 5px; border-radius: 3px; margin-left: 5px; font-weight: bold;}
+.shop-item button { background: var(--text-color); color: var(--bg-color); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;}
+.event-banner { background: linear-gradient(90deg, #ff9a9e, #fad0c4); padding: 15px; border-radius: 10px; margin-bottom: 20px; color: white; font-weight: bold; text-align: center; }
+.profile-card { display: flex; align-items: center; gap: 15px; padding: 20px; background: #333; border-radius: 15px; color: white; margin-bottom: 20px; }
+.profile-img { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+.menu-list .menu-item { padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; cursor: pointer; font-size: 15px; }
+
+@media (max-width: 768px) {
+  .order-layout { flex-direction: column; gap: 20px; }
+  .left-panel, .right-panel { min-width: 100%; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-.bid-card:hover {
-  border-color: #ff6b6b;
-  transform: translateX(5px);
-}
-
-.bid-card.highlight {
-  border: 2px solid #ff6b6b;
-  background: #fffbfb;
-}
-
-.shop-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.shop-name {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.shop-score {
-  color: #f1c40f;
-  font-size: 14px;
-}
-
-.bid-price {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.shop-msg {
-  color: #666;
-  font-size: 14px;
-  background: #f0f0f0;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.accept-btn {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  background: #333;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.bid-card.highlight .accept-btn {
-  background: #ff6b6b;
-}
-
-.reset-btn {
-  display: block;
-  margin: 40px auto 0;
-  padding: 10px 30px;
-  background: #ddd;
-  border: none;
-  border-radius: 30px;
-  font-size: 16px;
-  cursor: pointer;
-}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
