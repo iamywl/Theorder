@@ -1,38 +1,153 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  background-color: #f9f9f9;
+  padding-top: 20px;
+}
+
+.order-container {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.canvas-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.drawing-canvas {
+  border: 2px dashed #ccc;
+  touch-action: none; /* 모바일 터치 스크롤 방지 */
+  border-radius: 8px;
+}
+
+.input-label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: left;
+  color: #333;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.textarea-field {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-btn {
+  margin-top: 30px;
+  width: 100%;
+  padding: 15px;
+  background-color: #8e44ad; /* 보라색 */
   color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-.App-link {
-  color: #61dafb;
+.submit-btn:disabled {
+  background-color: #ccc;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.reset-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}.App {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding-top: 20px;
+}
+
+.order-container {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.canvas-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.drawing-canvas {
+  border: 2px dashed #ccc;
+  touch-action: none; /* 모바일 터치 스크롤 방지 */
+  border-radius: 8px;
+}
+
+.input-label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: left;
+  color: #333;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.textarea-field {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-btn {
+  margin-top: 30px;
+  width: 100%;
+  padding: 15px;
+  background-color: #8e44ad; /* 보라색 */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+}
+
+.reset-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
 }

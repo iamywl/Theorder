@@ -1,13 +1,11 @@
-// src/App.js
-
+import React from 'react';
 import './App.css';
-import OrderForm from './OrderForm'; // 1. OrderForm 컴포넌트 불러오기
+import OrderForm from './OrderForm';
 
 function App() {
   return (
     <div className="App">
-      {/* 2. OrderForm 컴포넌트 렌더링 */}
-      <OrderForm /> 
+      <OrderForm />
     </div>
   );
 }
